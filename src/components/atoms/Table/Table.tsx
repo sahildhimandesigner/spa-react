@@ -3,15 +3,26 @@ import axios from 'axios';
 import { Count } from '../Count';
 import { TDColumn } from '../TDColumn';
 import { Form } from '../../molecules/Form';
+import { Search } from '../../molecules/Search';
 
 const Table = () => {
     const [data, setData] = useState([])    
     const [checkedItems, setCheckedItems] = useState<string[]>([]);
+    const [searchItem, setSearchItem ] = useState('');
     const dataUrl = 'https://retoolapi.dev/bhAivj/data';
 
     useEffect(() => {
         getDataList();
     }, [])
+    
+    useEffect(() => {
+        if(searchItem){
+            fetchData()
+        }
+        else if (searchItem === '') {
+            getDataList();
+        }
+    }, [searchItem])
 
     const getDataList = () => {
         axios.get(dataUrl)
@@ -33,7 +44,6 @@ const Table = () => {
 
     const clearItemHandler = () => {
         setCheckedItems([]);
-        alert('ddd')
     }
 
     const deleteHandler = () => {
@@ -50,10 +60,27 @@ const Table = () => {
     }
 
     let totalCount = checkedItems.length;
+
+    const onHandleSearch = (event: any) => {
+        const { value } = event.target;
+        setSearchItem(value);        
+    };
     
-    console.log(checkedItems, 'checkedItems')
+
+    const fetchData = () => {
+         axios
+            .get(`https://retoolapi.dev/bhAivj/data?file_name=${searchItem}`)
+            .then((response) => {
+                setData(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+      };
+
   return (
     <>
+        <Search searchItem={searchItem} onHandleSearch={onHandleSearch} />
         <Form getDataList={getDataList} />
         <br />
         <table width="1000" className='min-w-full divide-y divide-gray-300'>

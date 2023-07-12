@@ -2,7 +2,7 @@ import { Table } from "../../atoms/Table";
 
 const Home = () => {
   return (
-    <div>
+    <div>      
       <Table />
     </div>
   )
