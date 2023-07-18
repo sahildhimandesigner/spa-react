@@ -1,5 +1,6 @@
+import { Button } from "../../atoms/Button"
 
-const Search = ({searchItem, onHandleSearch}:any) => {
+const Search = ({searchItem, clearHandler, onHandleSearch}:any) => {
   return (
     <div className="flex w-[500px] flex-col items-start m-auto mt-7">        
         <input 
@@ -9,6 +10,7 @@ const Search = ({searchItem, onHandleSearch}:any) => {
             name={searchItem} 
             onChange={onHandleSearch} 
         />
+        <Button onClick={clearHandler} type="button">Clear</Button>
     </div>
   )
 }

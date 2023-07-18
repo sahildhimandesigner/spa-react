@@ -4,13 +4,16 @@ import { Count } from '../Count';
 import { TDColumn } from '../TDColumn';
 import { Form } from '../../molecules/Form';
 import { Search } from '../../molecules/Search';
+import { Loader } from '../../atoms/Loader'
 
 const Table = () => {
     const [data, setData] = useState([])    
     const [checkedItems, setCheckedItems] = useState<string[]>([]);
     const [searchItem, setSearchItem ] = useState('');
+    const [loader, setLoader] = useState(false);
     const dataUrl = 'https://retoolapi.dev/bhAivj/data';
 
+    console.log(dataUrl, 'dataUrl')
     useEffect(() => {
         getDataList();
     }, [])
@@ -25,13 +28,20 @@ const Table = () => {
     }, [searchItem])
 
     const getDataList = () => {
-        axios.get(dataUrl)
+        setLoader(true)
+        axios.get(`https://retoolapi.dev/bhAivj/data`)
         .then(function (response) {
-            setData(response.data)            
+            setLoader(false) 
+            setData(response.data)                      
         })
         .catch(function (error) {
             console.log(error);
         })
+    }
+
+    const clearHandler = () => {
+        getDataList();
+        setSearchItem('');
     }
 
     const handleCheckboxChange = (itemId:any) => {
@@ -68,10 +78,12 @@ const Table = () => {
     
 
     const fetchData = () => {
+        setLoader(true)
          axios
             .get(`https://retoolapi.dev/bhAivj/data?file_name=${searchItem}`)
             .then((response) => {
                 setData(response.data);
+                setLoader(false)
             })
             .catch((error) => {
                 console.error(error);
@@ -80,7 +92,12 @@ const Table = () => {
 
   return (
     <>
-        <Search searchItem={searchItem} onHandleSearch={onHandleSearch} />
+        <Loader loader={loader} />
+        <Search 
+            clearHandler={clearHandler} 
+            searchItem={searchItem} 
+            onHandleSearch={onHandleSearch} 
+            />
         <Form getDataList={getDataList} />
         <br />
         <table width="1000" className='min-w-full divide-y divide-gray-300'>
